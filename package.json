@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc",
     "build:check": "tsc --noEmit --incremental false",
     "docs": "typedoc --options typedoc.json src/index.ts",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint --ext .ts",
     "lint:fix": "eslint --ext .ts --fix",
     "prepare": "husky install",
@@ -51,5 +51,8 @@
     "node-fetch": "^3.1.0",
     "revolt-api": "^0.5.3-alpha.12",
     "revolt.js": "^5.2.8"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }
