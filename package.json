@@ -30,7 +30,7 @@
   "bugs": {
     "url": "https://github.com/cosmos-xyz/cosmos/issues"
   },
-  "homepage": "https://github.com/cosmos-xyz/cosmos#readme",
+  "homepage": "https://cosmos-xyz.github.io/cosmos",
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.7",

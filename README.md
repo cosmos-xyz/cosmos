@@ -61,3 +61,5 @@ npm i revolt.js
 * [Repository](https://github.com/cosmos-xyz/cosmos)
 
 * [Changelogs](https://github.com/cosmos-xyz/cosmos/releases)
+
+* [Documentation](https://cosmos-xyz.github.io/cosmos)
