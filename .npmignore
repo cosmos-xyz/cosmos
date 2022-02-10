@@ -1,0 +1,15 @@
+__tests__/
+.github/
+.husky/
+.vscode/
+coverage/
+docs/
+src/
+.eslintignore
+.eslintrc
+.gitignore
+.prettierrc
+tsconfig.eslint.json
+tsconfig.json
+typedoc.json
+jest.config.js
