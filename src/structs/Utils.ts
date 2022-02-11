@@ -112,10 +112,10 @@ export class CosmosUtils {
    */
   getUserBadge(user: User) {
     const bitfield = user.badges;
-    if(!bitfield) return [];
+    if (!bitfield) return [];
 
     return Object.keys(Badges).filter((badge) => {
-      if(Number(badge)) return false;
+      if (Number(badge)) return false;
       // eslint-disable-next-line no-bitwise
       return bitfield & Number(Badges[badge as BadgeString]);
     }) as BadgeString[];
@@ -131,23 +131,23 @@ export class CosmosUtils {
   escapeSpoilers(message: string) {
     const regex = new RegExp(/!!/gm).exec(message);
     // Spoiler tags require >1 "!!"
-    if(regex && regex.length < 1) return message;
+    if (regex && regex.length < 1) return message;
 
     const occurrences = message.match(/!!/gm)?.length ?? 0;
-    if(!occurrences) return { count: 0, message: message };
+    if (!occurrences) return { count: 0, message: message };
 
     // A workaround to prevent normal exclamation mark being treated as a spoiler tag
-    if(occurrences % 2 !== 0) {
-      for(let i = 0; i < occurrences - 1; i++) {
+    if (occurrences % 2 !== 0) {
+      for (let i = 0; i < occurrences - 1; i++) {
         message = message.replace(/!!/, "");
       }
     } else {
-      for(let i = 0; i < occurrences; i++) {
+      for (let i = 0; i < occurrences; i++) {
         message = message.replace(/!!/, "");
       }
     }
 
-    return { count: (occurrences % 2 !== 0 ? occurrences - 1 : occurrences), message: message };
+    return { count: occurrences % 2 !== 0 ? occurrences - 1 : occurrences, message: message };
   }
 
   /**
@@ -157,11 +157,11 @@ export class CosmosUtils {
    */
   getEmbeddedLink(message: string) {
     let strings = message.split(" ");
-    strings = strings.filter((s) => (new RegExp(/\[.+\]\(.+\)/)).test(s));
+    strings = strings.filter((s) => new RegExp(/\[.+\]\(.+\)/).test(s));
 
     const res: string[] = [];
 
-    for(let word of strings) {
+    for (let word of strings) {
       // Remove hypertext and brackets [] and ()
       word = word.replace(/\[.+\]\(/, "").replace(/\)/, "");
       // Remove angle brackets (used to hide link embed)
@@ -185,9 +185,9 @@ export class CosmosUtils {
 
     let res = 0;
 
-    for(let edits of messages) {
+    for (let edits of messages) {
       res++;
-      if(!edits.startsWith(">")) continue;
+      if (!edits.startsWith(">")) continue;
       edits = edits.replace(/^>/, "");
       messages[res] = edits;
     }

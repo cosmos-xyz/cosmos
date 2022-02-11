@@ -54,13 +54,13 @@ export declare interface CosmosClient {
    */
   on(event: "messageUpdate", listener: (message: Message, details: MessageUpdatedDetails) => void): this;
   /**
-   * Emitted when a message is deleted 
+   * Emitted when a message is deleted
    * @param _id The message ID
    */
   on(event: "messageDelete", listener: (_id: string) => void): this;
 
   /**
-   * Emitted when a new channel is created 
+   * Emitted when a new channel is created
    * @param channel The channel object
    */
   on(event: "channelCreate", listener: (channel: Channel) => void): this;
@@ -70,19 +70,19 @@ export declare interface CosmosClient {
    */
   on(event: "channelUpdate", listener: (channel: Channel, details: ChannelUpdatedDetails) => void): this;
   /**
-   * Emitted when a channel is deleted 
+   * Emitted when a channel is deleted
    * @param _id The channel ID
    */
   on(event: "channelDelete", listener: (_id: string) => void): this;
 
   /**
-   * Emitted when a user joined a group 
+   * Emitted when a user joined a group
    * @param _id The group channel ID
    * @param user The new group member object
    */
   on(event: "groupJoin", listener: (_id: string, user: string) => void): this;
   /**
-   * Emitted when a group member left a group 
+   * Emitted when a group member left a group
    * @param _id The group channel ID
    * @param user The group member ID
    */
@@ -94,7 +94,7 @@ export declare interface CosmosClient {
    * @param user The user ID
    */
   on(event: "typingStart", listener: (_id: string, user: string) => void): this;
-    /**
+  /**
    * Emitted when a user stopped typing in a channel
    * @param _id The channel ID
    * @param user The user ID
@@ -114,7 +114,7 @@ export declare interface CosmosClient {
    */
   on(event: "serverUpdate", listener: (server: Server, details: ServerUpdatedDetails) => void): this;
   /**
-   * Emitted when a server has been deleted 
+   * Emitted when a server has been deleted
    * @param _id The server ID
    */
   on(event: "serverDelete", listener: (_id: string) => void): this;
@@ -125,7 +125,7 @@ export declare interface CosmosClient {
    */
   on(event: "memberJoin", listener: (member: Member) => void): this;
   /**
-   * Emitted when a member has updated changes 
+   * Emitted when a member has updated changes
    * @param member The old member object (before updated)
    */
   on(event: "memberUpdate", listener: (member: Member, details: MemberUpdatedDetails) => void): this;
@@ -137,7 +137,7 @@ export declare interface CosmosClient {
 
   /**
    * Emitted when a role is created or updated
-   * @param role The role object 
+   * @param role The role object
    */
   on(event: "roleUpdate", listener: (role: Role, details: RoleUpdatedDetails) => void): this;
   /**

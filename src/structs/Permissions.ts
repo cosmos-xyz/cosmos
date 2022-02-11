@@ -62,13 +62,13 @@ export class Permissions {
    * @returns the permission bitfield
    */
   getServerBitfield(server: Server, user: User) {
-    if(server.owner === user._id) return U32_MAX;
+    if (server.owner === user._id) return U32_MAX;
 
     const member = this.client.bot.members.getKey({ user: user._id, server: server._id });
-    if(!member) return 0;
+    if (!member) return 0;
 
     let permission = server.default_permissions[0] >>> 0;
-    if(member.roles) {
+    if (member.roles) {
       for (const role of member.roles) {
         permission |= (server.roles?.[role].permissions[0] ?? 0) >>> 0;
       }
@@ -84,20 +84,10 @@ export class Permissions {
    * @returns array of permission strings
    */
   channelBitfieldToPermissionStrings(bitfield: number) {
-    if(bitfield > 511) return [
-      "View", 
-      "SendMessage", 
-      "ManageMessages", 
-      "ManageChannel", 
-      "VoiceCall",
-      "Invite Others",
-      "EmbedLinks",
-      "UploadFiles",
-      "Masquerade"
-    ];
+    if (bitfield > 511) return ["View", "SendMessage", "ManageMessages", "ManageChannel", "VoiceCall", "Invite Others", "EmbedLinks", "UploadFiles", "Masquerade"];
 
     return Object.keys(ChannelPermission).filter((perm) => {
-      if(Number(perm)) return false;
+      if (Number(perm)) return false;
       return bitfield & Number(ChannelPermission[perm as ChannelPermissionString]);
     }) as ChannelPermissionString[];
   }
@@ -109,21 +99,10 @@ export class Permissions {
    * @returns array of permission strings
    */
   serverBitfieldToPermissionStrings(bitfield: number) {
-    if(bitfield > 61503) return [
-      "View",
-      "ManageRoles",
-      "ManageChannels",
-      "ManageServer",
-      "KickMembers",
-      "BanMembers",
-      "ChangeNickname",
-      "ManageNickname",
-      "ChangeAvatar",
-      "RemoveAvatars"
-    ];
+    if (bitfield > 61503) return ["View", "ManageRoles", "ManageChannels", "ManageServer", "KickMembers", "BanMembers", "ChangeNickname", "ManageNickname", "ChangeAvatar", "RemoveAvatars"];
 
     return Object.keys(ServerPermission).filter((perm) => {
-      if(Number(perm)) return false;
+      if (Number(perm)) return false;
       return bitfield & Number(ServerPermission[perm as ServerPermissionString]);
     }) as ServerPermissionString[];
   }
@@ -160,7 +139,7 @@ export class Permissions {
   hasChannelPermissions(channel: Channel, user: User, permissions: ChannelPermissionString[]) {
     const bitfield = this.getChannelBitfield(channel, user);
     const perms = this.channelBitfieldToPermissionStrings(bitfield);
-    return (perms === permissions);
+    return perms === permissions;
   }
 
   /**
@@ -173,6 +152,6 @@ export class Permissions {
   hasServerPermissions(server: Server, user: User, permissions: ServerPermissionString[]) {
     const bitfield = this.getServerBitfield(server, user);
     const perms = this.serverBitfieldToPermissionStrings(bitfield);
-    return (perms === permissions);
+    return perms === permissions;
   }
 }
