@@ -3,44 +3,34 @@ Feature-rich extendable revolt.js framework
 
 ### Examples
 * Javascript / ES6
-
 ```js
 import { CosmosClient } from "@cosmos-xyz/cosmos";
 
 const client = new CosmosClient();
 
 client.on("ready", () => {
-
     console.log(`Logged in as ${client.user.username}`);
-
 });
 
 client.on("message", (message) => {
-
     if(message.content === "?ping") message.reply({ content: "Pong!" });
-
 })
 
 client.login(LOGIN_DETAILS);
 ```
 
 * Typescript
-
 ```ts
 import { CosmosClient } from "@cosmos-xyz/cosmos";
 
 const client = new CosmosClient();
 
 client.on("ready", () => {
-
     console.log(`Logged in as ${client.user!.username}`);
-
 });
 
 client.on("message", (message) => {
-
     if(message.content === "?ping") message.reply({ content: "Pong!" });
-
 })
 
 client.login(LOGIN_DETAILS);
@@ -62,4 +52,4 @@ npm i revolt.js
 
 * [Changelogs](https://github.com/cosmos-xyz/cosmos/releases)
 
-* [Documentation](https://cosmos-xyz.github.io/cosmos)
+* [Documentation](https://cosmos.js.org)

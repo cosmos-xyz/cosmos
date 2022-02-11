@@ -1,11 +1,11 @@
 name: ESLint
 on:
   push:
-    branches:
-      - '*'
+    branches-ignore:
+      - 'gh-pages'
   pull_request:
-    branches:
-      - '*'
+    branches-ignore:
+      - 'gh-pages'
 jobs:
   test:
     name: ESLint (Node v16)

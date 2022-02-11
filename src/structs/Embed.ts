@@ -57,7 +57,6 @@ export class Embed {
 
     /**
      * The embed media
-     * TODO Fix this
      */
     this.media = value.media ?? undefined;
 

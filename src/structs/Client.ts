@@ -1,23 +1,186 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { Client } from "revolt.js";
-import TypedEmitter from "typed-emitter";
-import EventEmitter from "node:events";
+import EventEmitter from "eventemitter3";
 import { CosmosOptions, ConnectDetails } from "../typings/client";
 import { CosmosUtils } from "./Utils";
 import { Permissions } from "./Permissions";
-import { CosmosEvents, MessageUpdatedDetails, ChannelUpdatedDetails, ServerUpdatedDetails, MemberUpdatedDetails, RoleUpdatedDetails, UserUpdatedDetails } from "../typings";
+import { Channel } from "revolt.js/dist/maps/Channels";
+import { Member } from "revolt.js/dist/maps/Members";
+import { Message } from "revolt.js/dist/maps/Messages";
+import { Server } from "revolt.js/dist/maps/Servers";
+import { User } from "revolt.js/dist/maps/Users";
+import { ClientboundNotification } from "revolt.js/dist/websocket/notifications";
+import { RelationshipStatus, User as RawUser } from "revolt-api/types/Users";
+import type { Member as RawMember, MemberCompositeKey, Server as RawServer } from "revolt-api/types/Servers";
+import type { Channel as RawChannel } from "revolt-api/types/Channels";
 import { Role } from "revolt-api/types/Servers";
+import { MessageUpdatedDetails, ChannelUpdatedDetails, ServerUpdatedDetails, MemberUpdatedDetails, RoleUpdatedDetails, UserUpdatedDetails } from "../typings";
 
-export class CosmosClient extends (EventEmitter as unknown as new () => TypedEmitter<CosmosEvents>) {
+export declare interface CosmosClient {
+  /** Emitted when the server authenticated the connection */
+  on(event: "connected", listener: () => void): this;
+  /** Emitted when the client is connecting to the server */
+  on(event: "connecting", listener: () => void): this;
+  /** Emitted when the connection dropped */
+  on(event: "disconnected", listener: () => void): this;
+
+  /**
+   * Emitted when the client is ready
+   * @param users Total users object received from the websocket
+   * @param servers Total servers object received from the websocket
+   * @param channels Total channels object received from the websocket
+   * @param members Total members object received from the websocket
+   */
+  on(event: "ready", listener: (users: RawUser[], servers: RawServer[], channels: RawChannel[], members: RawMember[]) => void): this;
+
+  /** Emitted when the client logged out */
+  on(event: "logout", listener: () => void): this;
+
+  /**
+   * Emitted when the websocket receives any data
+   * @param payload The raw payload received from the websocket
+   */
+  on(event: "raw", listener: (payload: ClientboundNotification) => void): this;
+
+  /**
+   * Emitted when a message is sent
+   * @param message The message object
+   */
+  on(event: "message", listener: (message: Message) => void): this;
+  /**
+   * Emitted when a message is edited
+   * @param message The old message object (before edited)
+   */
+  on(event: "messageUpdate", listener: (message: Message, details: MessageUpdatedDetails) => void): this;
+  /**
+   * Emitted when a message is deleted 
+   * @param _id The message ID
+   */
+  on(event: "messageDelete", listener: (_id: string) => void): this;
+
+  /**
+   * Emitted when a new channel is created 
+   * @param channel The channel object
+   */
+  on(event: "channelCreate", listener: (channel: Channel) => void): this;
+  /**
+   * Emitted when a channel is editedhas updated changes
+   * @param message The old channel object (before updated)
+   */
+  on(event: "channelUpdate", listener: (channel: Channel, details: ChannelUpdatedDetails) => void): this;
+  /**
+   * Emitted when a channel is deleted 
+   * @param _id The channel ID
+   */
+  on(event: "channelDelete", listener: (_id: string) => void): this;
+
+  /**
+   * Emitted when a user joined a group 
+   * @param _id The group channel ID
+   * @param user The new group member object
+   */
+  on(event: "groupJoin", listener: (_id: string, user: string) => void): this;
+  /**
+   * Emitted when a group member left a group 
+   * @param _id The group channel ID
+   * @param user The group member ID
+   */
+  on(event: "groupLeave", listener: (_id: string, user: string) => void): this;
+
+  /**
+   * Emitted when a user started typing in a channel
+   * @param _id The channel ID
+   * @param user The user ID
+   */
+  on(event: "typingStart", listener: (_id: string, user: string) => void): this;
+    /**
+   * Emitted when a user stopped typing in a channel
+   * @param _id The channel ID
+   * @param user The user ID
+   */
+  on(event: "typingStop", listener: (_id: string, user: string) => void): this;
+  /**
+   * Emitted when the client acknowledged new messages in a channel up to @param message message ID
+   * @param _id The channel ID
+   * @param user The user ID
+   * @param message The message ID
+   */
+  on(event: "channelAck", listener: (_id: string, user: string, message: string) => void): this;
+
+  /**
+   * Emitted when a server has updated details
+   * @param server The old server object (before updated)
+   */
+  on(event: "serverUpdate", listener: (server: Server, details: ServerUpdatedDetails) => void): this;
+  /**
+   * Emitted when a server has been deleted 
+   * @param _id The server ID
+   */
+  on(event: "serverDelete", listener: (_id: string) => void): this;
+
+  /**
+   * Emitted when a member joined a server
+   * @param member The new member object
+   */
+  on(event: "memberJoin", listener: (member: Member) => void): this;
+  /**
+   * Emitted when a member has updated changes 
+   * @param member The old member object (before updated)
+   */
+  on(event: "memberUpdate", listener: (member: Member, details: MemberUpdatedDetails) => void): this;
+  /**
+   * Emitted when a member left a server
+   * @param _id An object containing the member ID and server ID
+   */
+  on(event: "memberLeave", listener: (_id: MemberCompositeKey) => void): this;
+
+  /**
+   * Emitted when a role is created or updated
+   * @param role The role object 
+   */
+  on(event: "roleUpdate", listener: (role: Role, details: RoleUpdatedDetails) => void): this;
+  /**
+   * Emitted when a role is deleted
+   * @param _id The role ID
+   * @param server The server ID
+   */
+  on(event: "roleDelete", listener: (_id: string, server: string) => void): this;
+
+  /**
+   * Emitted when a user has updated changes
+   * @param user The user object
+   */
+  on(event: "userUpdate", listener: (user: User, details: UserUpdatedDetails) => void): this;
+  /**
+   * Emitted when the client updated their relationship with a user
+   * @param _id The client's user ID
+   * @param user The user's ID
+   * @param relationship The new relationship status*/
+  on(event: "relationshipUpdate", listener: (_id: string, user: string, relationship: RelationshipStatus) => void): this;
+
+  /**
+   * Custom events (if you want to add some)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  on(event: string, listener: (...args: any[]) => void): this;
+}
+export class CosmosClient extends EventEmitter {
+  /** The client options given when initiating the client */
   readonly options: Partial<CosmosOptions>;
+  /** The revolt.js `Client` object */
   readonly bot: Client;
+  /** Utility functions */
   readonly utils: CosmosUtils;
+  /** Permission checking */
   readonly perms: Permissions;
 
+  /** If the bot is connected to the websocket */
   connected: boolean;
+  /** Number (in milliseconds) since the bot is ready */
   uptime: number;
 
+  /** Details for logging in */
   loginDetail?: ConnectDetails;
 
   constructor(options: Partial<CosmosOptions> = {}) {

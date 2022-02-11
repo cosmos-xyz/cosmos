@@ -23,7 +23,7 @@ export class Permissions {
    * @param user the user object
    * @returns the permission bitfield
    */
-  getChannelPermissionBitfield(channel: Channel, user: User) {
+  getChannelBitfield(channel: Channel, user: User) {
     switch (channel.channel_type) {
       case "SavedMessages": {
         return U32_MAX;
@@ -61,7 +61,7 @@ export class Permissions {
    * @param user the user object
    * @returns the permission bitfield
    */
-  getServerPermissionBitfield(server: Server, user: User) {
+  getServerBitfield(server: Server, user: User) {
     if(server.owner === user._id) return U32_MAX;
 
     const member = this.client.bot.members.getKey({ user: user._id, server: server._id });
@@ -129,6 +129,28 @@ export class Permissions {
   }
 
   /**
+   * Get the channel permissions in permission strings
+   * @param channel the channel object
+   * @param user the user object
+   * @returns array of permission strings
+   */
+  getChannelPermissions(channel: Channel, user: User) {
+    const bitfield = this.getChannelBitfield(channel, user);
+    return this.channelBitfieldToPermissionStrings(bitfield);
+  }
+
+  /**
+   * Get the server permissions in permission strings
+   * @param server the server object
+   * @param user the user object
+   * @returns array of permission strings
+   */
+  getServerPermissions(server: Server, user: User) {
+    const bitfield = this.getServerBitfield(server, user);
+    return this.serverBitfieldToPermissionStrings(bitfield);
+  }
+
+  /**
    * Check if the user has the permissions provided
    * @param channel the channel object
    * @param user the user object
@@ -136,7 +158,7 @@ export class Permissions {
    * @returns boolean
    */
   hasChannelPermissions(channel: Channel, user: User, permissions: ChannelPermissionString[]) {
-    const bitfield = this.getChannelPermissionBitfield(channel, user);
+    const bitfield = this.getChannelBitfield(channel, user);
     const perms = this.channelBitfieldToPermissionStrings(bitfield);
     return (perms === permissions);
   }
@@ -149,7 +171,7 @@ export class Permissions {
    * @returns boolean
    */
   hasServerPermissions(server: Server, user: User, permissions: ServerPermissionString[]) {
-    const bitfield = this.getServerPermissionBitfield(server, user);
+    const bitfield = this.getServerBitfield(server, user);
     const perms = this.serverBitfieldToPermissionStrings(bitfield);
     return (perms === permissions);
   }

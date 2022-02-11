@@ -23,7 +23,7 @@ export class CosmosUtils {
    */
   get versions() {
     return {
-      cosmos: "0.1.0",
+      cosmos: "0.2.0",
       revolt: this.client.bot.configuration?.revolt,
       "revolt.js": LIBRARY_VERSION
     };
@@ -124,12 +124,74 @@ export class CosmosUtils {
   /**
    * Remove the spoiler tags from a string
    * @param message the string
-   * @returns the string without the spoiler tags
+   * @returns an object where
+   * `count` represents total spoiler tags ("!!" is counted as 1) removed &
+   * `message` represents original string without spoiler tags
    */
   escapeSpoilers(message: string) {
     const regex = new RegExp(/!!/gm).exec(message);
+    // Spoiler tags require >1 "!!"
     if(regex && regex.length < 1) return message;
-    message = message.replace(/!!/gm, "");
-    return message;
+
+    const occurrences = message.match(/!!/gm)?.length ?? 0;
+    if(!occurrences) return { count: 0, message: message };
+
+    // A workaround to prevent normal exclamation mark being treated as a spoiler tag
+    if(occurrences % 2 !== 0) {
+      for(let i = 0; i < occurrences - 1; i++) {
+        message = message.replace(/!!/, "");
+      }
+    } else {
+      for(let i = 0; i < occurrences; i++) {
+        message = message.replace(/!!/, "");
+      }
+    }
+
+    return { count: (occurrences % 2 !== 0 ? occurrences - 1 : occurrences), message: message };
+  }
+
+  /**
+   * Get the link embedded inside a message
+   * @param message the string
+   * @returns array of embedded links
+   */
+  getEmbeddedLink(message: string) {
+    let strings = message.split(" ");
+    strings = strings.filter((s) => (new RegExp(/\[.+\]\(.+\)/)).test(s));
+
+    const res: string[] = [];
+
+    for(let word of strings) {
+      // Remove hypertext and brackets [] and ()
+      word = word.replace(/\[.+\]\(/, "").replace(/\)/, "");
+      // Remove angle brackets (used to hide link embed)
+      word = word.replace(/</, "").replace(/>/, "");
+
+      res.push(word);
+    }
+
+    return res;
+  }
+
+  /**
+   * Remove block quotes from a message
+   * @param message the string
+   * @returns an object where
+   * `count` represents total block quotes removed &
+   * `message` represents original string without block quotes
+   */
+  escapeBlockQuotes(message: string) {
+    const messages = message.split("\n");
+
+    let res = 0;
+
+    for(let edits of messages) {
+      res++;
+      if(!edits.startsWith(">")) continue;
+      edits = edits.replace(/^>/, "");
+      messages[res] = edits;
+    }
+
+    return { count: res, message: messages.join("\n") };
   }
 }
