@@ -33,7 +33,7 @@
   "homepage": "https://cosmos.js.org",
   "devDependencies": {
     "@types/jest": "^27.4.0",
-    "@types/node": "^16.11.7",
+    "@types/node": "^18.14.4",
     "@types/ws": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
